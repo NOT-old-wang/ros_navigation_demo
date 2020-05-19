@@ -4,25 +4,28 @@ define block model
   gui_nose 0
 )
 
-define topurg ranger
+define ranger_senosr ranger  # 测距传感器
 (
   sensor(
+    range_min 0.1
     range_max 30.0
-    fov 270.25
-    samples 1081
+    fov 360
+    samples 1440
   )
   # generic model properties
   color "black"
   size [ 0.050 0.050 0.100 ]
 )
 
-define pr2 position
+define pr2 position  # 移动机器人底盘
 (
   size [0.650 0.650 0.250]
   origin [-0.050 0 0 0]
   gui_nose 1
-  drive "omni"
-  topurg(pose [ 0.275 0 0 0 ])
+  drive "omni"   # drive "diff", "omni" or "car"
+  # wheelbase 1.0  # only used if drive is set to "car"
+  ranger_senosr(pose [ 0.275 0 0 0 ])
+  # odom_error [0.003 0.003 0.00 0.005]  # only used if localization is set to "odom"
 )
 
 define floorplan model
@@ -43,9 +46,9 @@ define floorplan model
 )
 
 # set the resolution of the underlying raytrace model in meters
-resolution 0.01
+resolution 0.01  # 这个分辨率是stage本身使用的，不是map的分辨率
 
-interval_sim 100  # simulation timestep in milliseconds
+interval_sim 50  # simulation timestep in milliseconds 20hz
 
 
 window
@@ -61,10 +64,12 @@ floorplan
 ( 
   name "test"
   bitmap "../maps/test.pgm"
-  size [58.300 45.625 1.000]
+  size [58.300 45.625 1.000]  # 像素 / 分辨率
   pose [ -22.812 29.150 0 90.000 ] 
 )
 
 # throw in a robot
 pr2( pose [ -26.068 12.140 0 87.363 ] name "pr2" color "blue")
-block( pose [ -25.251 10.586 0 180.000 ] color "red")
+
+# 放入一个方块
+# block( pose [ -25.251 10.586 0 180.000 ] color "red")
